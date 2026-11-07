@@ -9,9 +9,9 @@ Este documento registra os recursos utilizados durante o laboratório Amazon EC2
 
 ## 1. Ambiente de execução
 
-O laboratório é executado em um ambiente educacional temporário fornecido pela **Escola da Nuvem**.
+O laboratório foi executado em um ambiente educacional temporário fornecido pela **Escola da Nuvem**.
 
-Por esse motivo, os valores e recursos analisados neste documento possuem finalidade educacional e não representam necessariamente cobranças realizadas em minha conta AWS pessoal.
+A análise usa os recursos do laboratório como referência para entender cobranças em uma conta AWS própria.
 
 ---
 
@@ -29,17 +29,7 @@ Por esse motivo, os valores e recursos analisados neste documento possuem finali
 
 ## 3. Amazon EC2
 
-A atividade inicia com uma instância:
-
-```text
-t3.micro
-```
-
-Posteriormente, a instância será redimensionada para:
-
-```text
-t3.small
-```
+A atividade começou com uma instância `t3.micro`. Após a interrupção, alterei o tipo para `t3.small` e iniciei a instância novamente.
 
 Em uma conta AWS convencional, instâncias EC2 podem gerar cobrança enquanto permanecem em execução.
 
@@ -49,17 +39,7 @@ Uma instância interrompida deixa de consumir capacidade computacional, mas outr
 
 ## 4. Amazon EBS
 
-O volume raiz inicia com:
-
-```text
-8 GiB
-```
-
-Durante o laboratório será ampliado para:
-
-```text
-10 GiB
-```
+O volume raiz `gp3` começou com `8 GiB` e foi ampliado para `10 GiB`.
 
 Volumes Amazon EBS podem continuar existindo e gerar custos mesmo quando uma instância EC2 está interrompida.
 
@@ -67,7 +47,7 @@ Volumes Amazon EBS podem continuar existindo e gerar custos mesmo quando uma ins
 
 ## 5. Endereço IPv4 público
 
-A instância utilizará um endereço IPv4 público para permitir o acesso ao servidor web durante o laboratório.
+Usei o IPv4 público da instância para testar o acesso ao servidor web pelo navegador.
 
 Em uma conta AWS real, endereços IPv4 públicos podem representar um componente adicional de custo.
 
@@ -75,14 +55,7 @@ Em uma conta AWS real, endereços IPv4 públicos podem representar um componente
 
 ## 6. Monitoramento
 
-O laboratório utiliza recursos de monitoramento da instância por meio do Amazon CloudWatch.
-
-O monitoramento será analisado principalmente para verificar:
-
-- estado da instância;
-- métricas básicas;
-- verificações de status;
-- disponibilidade do recurso.
+Consultei métricas de CPU e rede do CloudWatch na aba Monitoramento do EC2. Acompanhei o estado e as verificações de status no console da instância.
 
 ---
 
@@ -90,7 +63,7 @@ O monitoramento será analisado principalmente para verificar:
 
 O acesso ao servidor web também gera tráfego de dados.
 
-Durante este laboratório o volume de tráfego será pequeno, porém a transferência de dados é um fator que deve ser considerado em ambientes reais.
+O tráfego do laboratório veio dos testes de acesso HTTP. A transferência de dados é um dos fatores a acompanhar em uma conta própria.
 
 ---
 
@@ -124,6 +97,4 @@ Ao finalizar um laboratório em uma conta AWS real, devo verificar:
 
 ## 10. Resultado
 
-O controle de custos será atualizado conforme os recursos forem utilizados e analisados durante o laboratório.
-
-Ao final da atividade, esta seção registrará os principais aprendizados relacionados ao impacto financeiro da arquitetura utilizada.
+A instância foi encerrada no EC2 e a sessão educacional foi finalizada. A análise de custos é qualitativa. Durante a interrupção para o redimensionamento, o console destacou que volumes EBS e outros recursos associados podem continuar gerando cobranças. Em uma conta própria, vale conferir esses recursos separadamente ao encerrar a instância.

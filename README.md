@@ -36,7 +36,7 @@ Cada serviço estudado recebe sua própria pasta dentro do repositório.
 
 | Lab | Serviço AWS | Conteúdo principal | Status |
 | --- | --- | --- | --- |
-| 01 | [Amazon EC2](./EC2/) | Provisionamento, segurança, EBS, monitoramento e User Data | Em andamento |
+| 01 | [Amazon EC2](./EC2/) | Provisionamento, monitoramento, acesso HTTP, redimensionamento e encerramento | Concluído |
 
 Novos laboratórios serão adicionados conforme minha evolução nos estudos.
 
@@ -50,6 +50,8 @@ AWS-Lab/
 |
 `-- EC2/
     |-- README.md
+    |-- assets/
+    |   `-- arquitetura-conceitual-ec2.png
     |-- docs/
     |   `-- controle-de-custos.md
     |-- evidencias/
@@ -140,11 +142,11 @@ Em ambientes educacionais temporários, os custos são tratados como referência
 
 ---
 
-## Laboratório atual
+## Laboratório concluído
 
 ### Amazon EC2
 
-O primeiro laboratório do repositório aborda o Amazon Elastic Compute Cloud (EC2).
+O primeiro laboratório do repositório acompanhou o ciclo de vida de uma instância Amazon EC2, do provisionamento ao encerramento.
 
 Entre os principais tópicos estão:
 

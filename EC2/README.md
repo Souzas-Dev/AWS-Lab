@@ -2,11 +2,11 @@
 
 ![AWS EC2](https://img.shields.io/badge/AWS-Amazon_EC2-FF9900?logo=amazonwebservices&logoColor=white)
 ![Amazon Linux](https://img.shields.io/badge/Amazon_Linux-2023-232F3E?logo=linux&logoColor=white)
-![Status](https://img.shields.io/badge/status-em%20andamento-yellow)
+![Status](https://img.shields.io/badge/status-conclu%C3%ADdo-brightgreen)
 
 Laboratório prático dedicado ao provisionamento, gerenciamento, monitoramento e redimensionamento de uma instância **Amazon EC2**.
 
-A atividade é executada em um ambiente educacional temporário disponibilizado pela **Escola da Nuvem**, utilizando o Console de Gerenciamento da AWS.
+A atividade foi executada em um ambiente educacional temporário disponibilizado pela **Escola da Nuvem**, utilizando o Console de Gerenciamento da AWS.
 
 ---
 
@@ -16,7 +16,7 @@ O **Amazon Elastic Compute Cloud (Amazon EC2)** fornece capacidade computacional
 
 O serviço permite provisionar servidores virtuais em poucos minutos e ajustar a capacidade computacional conforme as necessidades do ambiente ou da aplicação.
 
-Durante este laboratório serão exploradas operações relacionadas ao ciclo de vida de uma instância EC2, incluindo criação, configuração de segurança, monitoramento, acesso a uma aplicação web, redimensionamento e encerramento.
+O laboratório percorreu o ciclo de vida de uma instância EC2, da criação e configuração de rede ao monitoramento, acesso à aplicação web, redimensionamento e encerramento.
 
 ### Arquitetura conceitual
 
@@ -64,7 +64,7 @@ A duração prevista do laboratório é de aproximadamente **45 minutos**.
 
 ## 2. Objetivos de aprendizagem
 
-Ao final do laboratório, pretendo ser capaz de:
+A atividade teve os seguintes objetivos de aprendizagem.
 
 - iniciar um servidor web em uma instância EC2 com proteção contra encerramento;
 - monitorar uma instância Amazon EC2;
@@ -137,7 +137,7 @@ A atividade é dividida em cinco tarefas principais.
 
 ---
 
-## 5. Configuração planejada
+## 5. Configuração utilizada
 
 | Configuração | Valor |
 | --- | --- |
@@ -158,7 +158,7 @@ A atividade é dividida em cinco tarefas principais.
 
 ## 6. Automação com EC2 User Data
 
-O script armazenado em [`scripts/user-data.sh`](./scripts/user-data.sh) será utilizado durante a criação da instância.
+O script armazenado em [`scripts/user-data.sh`](./scripts/user-data.sh) foi utilizado durante a criação da instância.
 
 A implementação foi personalizada para este projeto, mantendo todos os requisitos funcionais definidos pelo laboratório.
 
@@ -172,9 +172,9 @@ O script realiza automaticamente:
 
 A página mantém a mensagem **Hello From Your Web Server!**, utilizada na validação original da atividade, mas adiciona uma apresentação visual própria do projeto.
 
-### Resultado esperado
+### Página publicada
 
-Após a liberação da porta HTTP no Security Group, o servidor deverá apresentar:
+Após a liberação da porta HTTP no Security Group, a página exibiu os elementos abaixo.
 
 - identificação do laboratório Amazon EC2;
 - confirmação de uso do Amazon Linux 2023;
@@ -251,6 +251,41 @@ Após o provisionamento, a instância atingiu o estado **Em execução** e apres
 
 O conjunto completo com as **21 capturas da Tarefa 1** está disponível em [`evidencias/tarefa-01/`](./evidencias/tarefa-01/).
 
+### Evidências da Tarefa 2 — Monitorar a instância
+
+A instância apresentou **3/3 verificações de status aprovadas**. Consultei as métricas de CPU e rede na aba Monitoramento, integrada ao CloudWatch, e usei **Get Instance Screenshot** para visualizar a inicialização do Amazon Linux 2023.
+
+- [Verificações de status](./evidencias/tarefa-02/01-verificacoes-de-status.png)
+- [Monitoramento no CloudWatch](./evidencias/tarefa-02/02-monitoramento-cloudwatch.png)
+- [Captura da instância](./evidencias/tarefa-02/03-captura-da-instancia.jpg)
+
+### Evidências da Tarefa 3 — Atualizar o Security Group
+
+A primeira tentativa de acesso HTTP expirou. Adicionei ao Security Group uma regra de entrada TCP na porta `80`, com origem `0.0.0.0/0`, para o teste pelo navegador. A página personalizada do Apache então exibiu **Hello From Your Web Server!** e **Web Server Online**.
+
+- [Acesso HTTP antes da regra](./evidencias/tarefa-03/01-acesso-http-com-timeout.png)
+- [Regra de entrada HTTP](./evidencias/tarefa-03/02-regra-de-entrada-http-porta-80.png)
+- [Página personalizada online](./evidencias/tarefa-03/03-pagina-web-personalizada-online.png)
+
+### Evidências da Tarefa 4 — Redimensionar a instância
+
+Interrompi a instância, mudei o tipo de `t3.micro` para `t3.small` e aumentei o volume raiz EBS de `8 GiB` para `10 GiB`. Depois de iniciá-la novamente, confirmei que a `t3.small` estava em execução com **3/3 verificações aprovadas**.
+
+- [Instância interrompida](./evidencias/tarefa-04/03-instancia-interrompida.png)
+- [Alteração do tipo de instância](./evidencias/tarefa-04/04-alteracao-de-t3-micro-para-t3-small.png)
+- [Formulário de alteração do EBS para 10 GiB](./evidencias/tarefa-04/05-configuracao-do-ebs-para-10-gib.png)
+- [Instância t3.small em execução](./evidencias/tarefa-04/07-instancia-t3-small-em-execucao.png) (recorte de uma captura da Tarefa 5)
+- [Todas as capturas da Tarefa 4](./evidencias/tarefa-04/)
+
+### Evidências da Tarefa 5 — Testar a proteção contra encerramento
+
+A primeira tentativa de encerrar a instância falhou com a proteção habilitada. Desabilitei a proteção, repeti a operação e confirmei o estado **Encerrado** no console do EC2. Também finalizei a sessão no ambiente educacional. A tela de confirmação do **End Lab** ficou sem registro nas evidências do repositório.
+
+- [Encerramento bloqueado](./evidencias/tarefa-05/02-encerramento-bloqueado.png)
+- [Remoção da proteção confirmada](./evidencias/tarefa-05/04-protecao-contra-encerramento-removida.png)
+- [Instância encerrada](./evidencias/tarefa-05/07-instancia-encerrada.png)
+- [Todas as capturas da Tarefa 5](./evidencias/tarefa-05/)
+
 As capturas destinadas à publicação foram revisadas e identificadores sensíveis foram ocultados.
 
 ---
@@ -259,7 +294,7 @@ As capturas destinadas à publicação foram revisadas e identificadores sensív
 
 O Amazon EC2 utiliza um modelo em que o consumo de recursos influencia diretamente o custo do ambiente.
 
-Embora este laboratório seja executado em um ambiente educacional temporário, também serão analisados os principais componentes que poderiam gerar custos em uma conta AWS real.
+O laboratório ocorreu em um ambiente educacional temporário. O documento de custos relaciona os recursos usados aos fatores de cobrança em uma conta AWS própria.
 
 [Acessar o controle de custos do laboratório](./docs/controle-de-custos.md)
 
@@ -289,7 +324,7 @@ EC2/
 
 ## 10. Segurança e boas práticas
 
-Durante a documentação do laboratório serão observadas práticas como:
+As práticas de segurança e documentação adotadas no laboratório incluem as seguintes.
 
 - não publicar credenciais;
 - não armazenar Access Keys ou Secret Access Keys;
@@ -302,10 +337,13 @@ Durante a documentação do laboratório serão observadas práticas como:
 
 ## 11. Status
 
-Em andamento.
+Concluído. A instância foi encerrada no EC2 e a sessão do laboratório foi finalizada.
 
 ---
 
 ## 12. Conclusão
 
-Esta seção será atualizada após a conclusão integral do laboratório, registrando os resultados, desafios encontrados e principais aprendizados.
+- **Diagnóstico.** Usei as verificações de status para acompanhar a saúde da instância, as métricas do CloudWatch para observar CPU e rede e a captura do EC2 para inspecionar a inicialização do sistema.
+- **Acesso HTTP.** O teste antes e depois da regra de entrada mostrou na prática como o Security Group controla o acesso à aplicação. A página abriu, mas alguns caracteres acentuados apareceram incorretamente no navegador.
+- **Redimensionamento.** A interrupção permitiu mudar o tipo da instância. Depois de iniciá-la, conferi o novo tipo e as verificações de status no console.
+- **Encerramento e custos.** A proteção bloqueou a exclusão até ser desabilitada. O aviso exibido ao interromper a instância destacou que recursos associados, como volumes EBS, podem continuar gerando custos.
