@@ -127,4 +127,3 @@ Ao finalizar um laboratório em uma conta AWS real, devo verificar:
 O controle de custos será atualizado conforme os recursos forem utilizados e analisados durante o laboratório.
 
 Ao final da atividade, esta seção registrará os principais aprendizados relacionados ao impacto financeiro da arquitetura utilizada.
-

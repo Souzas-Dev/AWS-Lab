@@ -164,4 +164,3 @@ A documentação final incluirá:
 ## 10. Conclusão
 
 Esta seção será preenchida após a conclusão integral do laboratório.
-
