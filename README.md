@@ -182,6 +182,6 @@ Com este projeto busco:
 
 ## Autor
 
-**Eduardo Souza — Souzas Dev**
+Eduardo Souza — Souzas Dev
 
 Desenvolvimento, tecnologia e aprendizado contínuo.
