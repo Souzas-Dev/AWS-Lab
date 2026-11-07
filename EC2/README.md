@@ -158,24 +158,31 @@ A atividade é dividida em cinco tarefas principais.
 
 ## 6. Automação com EC2 User Data
 
-O script armazenado em `scripts/user-data.sh` será utilizado durante a criação da instância.
+O script armazenado em [`scripts/user-data.sh`](./scripts/user-data.sh) será utilizado durante a criação da instância.
 
-Ele será responsável por:
+A implementação foi personalizada para este projeto, mantendo todos os requisitos funcionais definidos pelo laboratório.
 
-- instalar o Apache HTTP Server;
-- habilitar o serviço durante a inicialização;
-- iniciar o servidor web;
-- criar uma página HTML de teste.
+O script realiza automaticamente:
 
-```bash
-#!/bin/bash
+- instalação do Apache HTTP Server;
+- habilitação do Apache durante a inicialização;
+- inicialização do serviço `httpd`;
+- criação da página `/var/www/html/index.html`;
+- publicação de uma página web personalizada do AWS Lab.
 
-yum -y install httpd
-systemctl enable httpd
-systemctl start httpd
+A página mantém a mensagem **Hello From Your Web Server!**, utilizada na validação original da atividade, mas adiciona uma apresentação visual própria do projeto.
 
-echo '<html><h1>Hello From Your Web Server!</h1></html>' > /var/www/html/index.html
-```
+### Resultado esperado
+
+Após a liberação da porta HTTP no Security Group, o servidor deverá apresentar:
+
+- identificação do laboratório Amazon EC2;
+- confirmação de uso do Amazon Linux 2023;
+- confirmação do Apache HTTP Server;
+- status `Web Server Online`;
+- identificação Souzas Dev.
+
+O código completo permanece versionado separadamente para facilitar manutenção, reutilização e auditoria.
 
 ---
 
