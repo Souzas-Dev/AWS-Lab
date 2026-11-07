@@ -188,18 +188,70 @@ O código completo permanece versionado separadamente para facilitar manutençã
 
 ## 7. Evidências
 
-As capturas de tela serão registradas durante a execução e organizadas de acordo com cada tarefa.
+As evidências são registradas durante a execução e organizadas por tarefa.
 
-| Diretório | Conteúdo |
-| --- | --- |
-| `evidencias/tarefa-01/` | Criação e configuração inicial da instância |
-| `evidencias/tarefa-02/` | Monitoramento e verificações de status |
-| `evidencias/tarefa-03/` | Security Group e acesso HTTP |
-| `evidencias/tarefa-04/` | Redimensionamento da EC2 e do EBS |
-| `evidencias/tarefa-05/` | Proteção contra encerramento e finalização |
-| `evidencias/custos/` | Evidências relacionadas à análise de custos |
+### Evidências da Tarefa 1 — Iniciar a instância EC2
 
-Antes da publicação, as imagens serão revisadas para evitar a exposição de informações sensíveis.
+A primeira tarefa foi concluída com sucesso.
+
+Durante a execução, configurei:
+
+- instância `Web Server`;
+- tags para identificação do projeto;
+- Amazon Linux 2023;
+- tipo de instância `t3.micro`;
+- execução sem par de chaves;
+- `Lab VPC`;
+- Security Group sem regras de entrada;
+- volume raiz Amazon EBS `gp3` de `8 GiB`;
+- proteção contra encerramento;
+- User Data personalizado para instalação e configuração do Apache HTTP Server.
+
+Após o provisionamento, a instância atingiu o estado **Em execução** e apresentou **3/3 verificações de status aprovadas**.
+
+> O material do laboratório menciona 2/2 verificações. Durante a execução prática, o Console da AWS apresentou 3/3 verificações aprovadas; por isso, a documentação registra o resultado efetivamente observado.
+
+#### Principais evidências
+
+##### Nome e identificação do projeto
+
+![Nome e tags](./evidencias/tarefa-01/01-nome-e-tags.png)
+
+##### Amazon Linux 2023
+
+![Amazon Linux 2023](./evidencias/tarefa-01/03-ami-amazon-linux-2023.png)
+
+##### Tipo de instância t3.micro
+
+![Tipo de instância](./evidencias/tarefa-01/05-tipo-instancia-t3-micro.png)
+
+##### VPC e Security Group
+
+![VPC e Security Group](./evidencias/tarefa-01/07-vpc-e-security-group.png)
+
+##### Amazon EBS — 8 GiB
+
+![Amazon EBS](./evidencias/tarefa-01/09-armazenamento-ebs-8gib.png)
+
+##### Proteção contra encerramento
+
+![Proteção contra encerramento](./evidencias/tarefa-01/10-protecao-contra-encerramento.png)
+
+##### User Data personalizado
+
+![User Data](./evidencias/tarefa-01/11-user-data-personalizado.png)
+
+##### Instância criada com sucesso
+
+![Instância criada](./evidencias/tarefa-01/13-instancia-criada-com-sucesso.png)
+
+##### Verificações de status
+
+![3 de 3 verificações aprovadas](./evidencias/tarefa-01/17-verificacoes-status-3-de-3.png)
+
+O conjunto completo com as **21 capturas da Tarefa 1** está disponível em [`evidencias/tarefa-01/`](./evidencias/tarefa-01/).
+
+As capturas destinadas à publicação foram revisadas e identificadores sensíveis foram ocultados.
 
 ---
 
