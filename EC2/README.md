@@ -20,16 +20,41 @@ Durante este laboratório serão exploradas operações relacionadas ao ciclo de
 
 ### Arquitetura conceitual
 
-A arquitetura apresentada no material introdutório representa:
+![Arquitetura conceitual do laboratório Amazon EC2](./assets/arquitetura-conceitual-ec2.png)
+
+A arquitetura abaixo representa, de forma simplificada, o ambiente utilizado durante o laboratório:
+
+```mermaid
+flowchart TB
+    AZ["Availability Zone"]
+    SG["Security Group"]
+    EC2["Amazon EC2<br/>Web Server"]
+    OS["Amazon Linux 2023"]
+    APACHE["Apache HTTP Server"]
+    EBS["Amazon EBS<br/>8 GiB → 10 GiB"]
+    HTTP["Cliente Web<br/>HTTP :80"]
+
+    AZ --> SG
+    SG --> EC2
+    EC2 --> OS
+    OS --> APACHE
+    EC2 --- EBS
+    HTTP -->|HTTP porta 80| SG
+```
+
+A arquitetura contempla:
 
 - uma instância Amazon EC2;
 - execução dentro de uma Availability Zone;
 - proteção de rede por meio de um Security Group;
-- hospedagem de um servidor web.
+- Amazon Linux 2023 como sistema operacional;
+- Apache HTTP Server como servidor web;
+- Amazon EBS como armazenamento da instância;
+- acesso HTTP pela porta 80 após a atualização do Security Group.
 
 O Security Group funciona como uma camada de controle de tráfego da instância, definindo quais conexões de entrada e saída são permitidas.
 
-> Observação: o diagrama introdutório identifica o servidor como `IIS Web Server`. Entretanto, a execução prática deste laboratório utiliza **Amazon Linux 2023 com Apache HTTP Server**, conforme definido nas instruções da atividade.
+> Observação: o diagrama introdutório do material didático identifica o servidor como `IIS Web Server`. Entretanto, a execução prática deste laboratório utiliza **Amazon Linux 2023 com Apache HTTP Server**, conforme definido nas instruções da atividade.
 
 ### Duração estimada
 
@@ -186,6 +211,8 @@ Embora este laboratório seja executado em um ambiente educacional temporário, 
 ```text
 EC2/
 |-- README.md
+|-- assets/
+|   `-- arquitetura-conceitual-ec2.png
 |-- docs/
 |   `-- controle-de-custos.md
 |-- evidencias/
