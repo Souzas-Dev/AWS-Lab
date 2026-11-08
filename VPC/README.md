@@ -55,9 +55,11 @@ flowchart TB
     PRIV2 --> NAT
 ```
 
-A versão gráfica autoral da arquitetura será adicionada posteriormente em:
+### Diagrama autoral da arquitetura
 
-`assets/arquitetura-conceitual-vpc.png`
+![Arquitetura conceitual do laboratório Amazon VPC](./assets/arquitetura-conceitual-vpc.png)
+
+O diagrama representa a arquitetura planejada para o laboratório, com VPC, sub-redes públicas e privadas, Internet Gateway, NAT Gateway, tabelas de rotas, Security Group e servidor web Amazon EC2.
 
 ### Duração estimada
 
