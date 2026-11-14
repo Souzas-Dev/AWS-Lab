@@ -39,7 +39,7 @@ Cada serviço estudado recebe sua própria pasta dentro do repositório.
 | 01 | [Amazon EC2](./EC2/) | Provisionamento, monitoramento, acesso HTTP, redimensionamento e encerramento | Concluído |
 | 02 | [Amazon VPC e Servidor Web](./VPC/) | Redes públicas e privadas, roteamento, NAT Gateway, Security Group e EC2 | Em andamento |
 
-O **Lab 02** está em preparação na branch `lab/vpc-web-server`. As evidências serão adicionadas conforme a execução prática.
+O **Lab 02** está em preparação. As evidências serão adicionadas conforme a execução prática.
 
 ---
 
