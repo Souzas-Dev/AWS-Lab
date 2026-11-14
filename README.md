@@ -37,8 +37,9 @@ Cada serviço estudado recebe sua própria pasta dentro do repositório.
 | Lab | Serviço AWS | Conteúdo principal | Status |
 | --- | --- | --- | --- |
 | 01 | [Amazon EC2](./EC2/) | Provisionamento, monitoramento, acesso HTTP, redimensionamento e encerramento | Concluído |
+| 02 | [Amazon VPC e Servidor Web](./VPC/) | Redes públicas e privadas, roteamento, NAT Gateway, Security Group e EC2 | Em andamento |
 
-Novos laboratórios serão adicionados conforme minha evolução nos estudos.
+O **Lab 02** está em preparação na branch `lab/vpc-web-server`. As evidências serão adicionadas conforme a execução prática.
 
 ---
 
@@ -63,6 +64,21 @@ AWS-Lab/
     |   `-- tarefa-05/
     `-- scripts/
         `-- user-data.sh
+|
+`-- VPC/
+    |-- README.md
+    |-- assets/
+    |   `-- arquitetura-conceitual-vpc.png
+    |-- docs/
+    |   `-- controle-de-custos.md
+    |-- evidencias/
+    |   |-- tarefa-01/
+    |   |-- tarefa-02/
+    |   |-- tarefa-03/
+    |   |-- tarefa-04/
+    |   `-- tarefa-05/
+    `-- scripts/
+        `-- (user-data.sh: pendente de implementação)
 ```
 
 Com a evolução dos estudos, novas áreas poderão ser adicionadas, como:
@@ -72,7 +88,6 @@ AWS-Lab/
 |-- EC2/
 |-- S3/
 |-- IAM/
-|-- VPC/
 |-- Lambda/
 `-- RDS/
 ```
@@ -142,7 +157,7 @@ Em ambientes educacionais temporários, os custos são tratados como referência
 
 ---
 
-## Laboratório concluído
+## Laboratórios em destaque
 
 ### Amazon EC2
 
@@ -164,6 +179,16 @@ Entre os principais tópicos estão:
 - proteção contra encerramento.
 
 [Acessar documentação do laboratório Amazon EC2](./EC2/)
+
+### Amazon VPC e Servidor Web
+
+O segundo laboratório está em andamento. O escopo inclui VPC `10.0.0.0/16`, quatro sub-redes divididas entre duas Zonas de Disponibilidade, Internet Gateway, NAT Gateway, tabelas de rotas, Security Group HTTP e uma instância EC2 com servidor web.
+
+A arquitetura, as cinco tarefas e o planejamento de custos estão documentados. **Os recursos ainda não foram confirmados como provisionados e as evidências reais serão adicionadas na execução.**
+
+[Acessar documentação do laboratório Amazon VPC](./VPC/)
+
+[Consultar o controle de custos planejado](./VPC/docs/controle-de-custos.md)
 
 ---
 
