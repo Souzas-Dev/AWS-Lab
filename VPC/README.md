@@ -243,7 +243,7 @@ O laboratório utiliza um script Bash executado durante a inicialização da ins
 
 O script será armazenado em:
 
-[`scripts/user-data.sh`](./scripts/user-data.sh)
+`scripts/user-data.sh` (arquivo planejado, ainda não implementado)
 
 Sua função será:
 
