@@ -17,6 +17,20 @@ Lançar uma instância EC2 com IPv4 público na Lab VPC, instalar o Apache, o PH
 | IPv4 público | Atribuição automática habilitada no formulário. A listagem mostra IPv4 e DNS públicos atribuídos (04, 08). |
 | Grupo de segurança | `Web Security Group` selecionado como grupo existente e exibido na listagem da instância (04, 08–09). A [Tarefa 04](tarefa-04-security-group.md) registra a criação da regra de entrada TCP 80 com origem `0.0.0.0/0`. |
 
+## Limitação de disponibilidade entre zonas
+
+A Public Subnet 2, selecionada para a instância Web Server 1,
+foi identificada na Zona de Disponibilidade `us-west-2a`.
+
+Essa é também a zona utilizada para as sub-redes iniciais
+da Tarefa 01. Portanto, as evidências não comprovam que a
+arquitetura planejada foi distribuída entre duas AZs.
+
+A Zona de Disponibilidade da Private Subnet 2 não foi
+confirmada nas capturas disponíveis.
+
+O acesso HTTP à aplicação foi comprovado, mas esse teste
+não demonstra alta disponibilidade multi-AZ.
 ## Automação com EC2 User Data
 
 O roteiro original usa Amazon Linux 2 com `yum` e `chkconfig`. O [script local](../scripts/user-data.sh) foi preparado para Amazon Linux 2023. Ele usa `dnf update -y`, instala `httpd`, `php`, `unzip` e `wget` com DNF, baixa o ZIP institucional do Lab 267 via HTTPS, extrai os arquivos em `/var/www/html`, atribui a propriedade a `apache:apache` e habilita e inicia o Apache com `systemctl enable --now httpd`.
