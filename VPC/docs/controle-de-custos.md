@@ -1,109 +1,77 @@
-# Controle de custos — Amazon VPC
+# Controle de custos — Lab 02 Amazon VPC
 
 ![AWS Cost](https://img.shields.io/badge/AWS-Cost_Management-FF9900?logo=amazonwebservices&logoColor=white)
-![Environment](https://img.shields.io/badge/ambiente-educacional-blue)
-![Status](https://img.shields.io/badge/status-planejamento-blue)
+![Status](https://img.shields.io/badge/execucao-documentada-green)
 
-Este documento acompanha os recursos previstos para o **Lab 02 — Amazon VPC e Servidor Web**. O controle começa no planejamento e será atualizado com os recursos efetivamente usados, os testes e as observações da execução.
+## 1. Contexto
 
----
+O Lab AWS 267 foi executado em ambiente educacional.
 
-## 1. Ambiente e escopo
+A documentação comprova o provisionamento inicial da VPC, associações de rede, criação do Security Group, execução do servidor web e encerramento da instância EC2.
 
-A atividade está planejada para um ambiente educacional temporário. A disponibilidade dos serviços e eventuais restrições serão conferidas no ambiente antes do provisionamento.
+**Não há valores reais de cobrança apurados nem comprovação da exclusão de todos os recursos da VPC.**
 
-**Status:** planejamento. Não há custos reais apurados nem recursos provisionados confirmados neste documento.
+## 2. Recursos e possíveis custos
 
-A análise de cobrança abaixo vale como referência para uma conta AWS convencional. Preços variam conforme região, configuração e período.
-
----
-
-## 2. Recursos previstos
-
-| Recurso | Configuração planejada | Atenção a custos |
+| Recurso | Situação documentada | Atenção a custos |
 | --- | --- | --- |
-| Amazon VPC | `Lab VPC`, `10.0.0.0/16` | A criação da VPC em si não tem cobrança adicional |
-| Sub-redes | Duas públicas e duas privadas, em duas AZs | A criação das sub-redes em si não tem cobrança adicional |
-| Internet Gateway | Um associado à VPC | Avaliar a transferência de dados dos recursos |
-| Tabelas de rotas | Pública e privada | A criação das tabelas em si não tem cobrança adicional |
-| NAT Gateway | Um, inicialmente em uma AZ | Cobrança por disponibilidade/tempo e por dados processados |
-| IPv4 público / Elastic IP | Conforme NAT Gateway e instância EC2 | Cobrança por endereços IPv4 públicos aplicáveis |
-| Amazon EC2 | `t3.micro`, servidor web | Cobrança de computação quando aplicável |
-| Amazon EBS | Volume raiz associado à EC2 | Cobrança por armazenamento provisionado |
-| Transferência de dados | Testes HTTP e eventuais downloads | Pode gerar cobrança dependendo do caminho do tráfego |
+| Amazon VPC | Criação confirmada | A VPC em si não possui cobrança adicional |
+| Sub-redes | Quatro sub-redes identificadas | Criação sem cobrança adicional |
+| Internet Gateway | Criação registrada no assistente | Transferência de dados pode gerar cobrança |
+| NAT Gateway | Criação e ativação registradas | Pode cobrar por duração e dados processados |
+| IPv4 público | Atribuído à EC2; EIP aparece no ambiente | Verificar endereços ainda alocados |
+| Amazon EC2 | t3.micro executada e encerrada | Computação cobrada quando aplicável |
+| Amazon EBS | Armazenamento associado à EC2 não auditado | Volumes residuais podem gerar cobrança |
+| Transferência de dados | Aplicação acessada via HTTP | Cobrança depende do tráfego e do ambiente |
 
----
+Os valores dependem da região, do período e das condições da conta AWS.
 
-## 3. Atenção especial ao NAT Gateway
+## 3. Resultado observado
 
-O NAT Gateway deve ser criado **somente quando a etapa exigir e o ambiente permitir**. Em uma conta própria, ele pode gerar cobrança enquanto estiver provisionado, mesmo sem tráfego, além das cobranças por volume de dados processados.
+- [x] Acesso HTTP à aplicação documentado.
+- [x] Instância EC2 colocada no estado Encerrado.
+- [ ] Confirmar a exclusão do NAT Gateway.
+- [ ] Conferir Elastic IPs e IPv4 públicos remanescentes.
+- [ ] Conferir volumes EBS residuais.
+- [ ] Confirmar remoção dos recursos de rede temporários, quando aplicável.
+- [ ] Verificar recursos remanescentes na região.
+- [ ] Consultar Billing ou Budgets, caso o ambiente permita.
+- [ ] Registrar o custo real ou a impossibilidade de consulta.
 
-O desenho planejado usa um NAT Gateway na primeira Zona de Disponibilidade. Se recursos da segunda zona enviarem tráfego por ele, também pode haver cobrança por transferência de dados entre zonas. Esse desenho é apropriado para seguir a atividade educacional, mas não representa, por si só, uma arquitetura de alta disponibilidade.
+Encerrar uma instância EC2 não remove automaticamente todos os recursos associados ao laboratório.
 
-**Boas práticas:**
-- Confirmar a região e a estrutura de preços antes de iniciar;
-- Registrar o horário de criação e de exclusão do NAT Gateway;
-- Evitar manter o recurso ativo fora da atividade;
-- Verificar se há Elastic IP remanescente após a exclusão;
-- Não presumir que o Free Tier ou créditos educacionais cobrem todos os recursos.
+## 4. Informações da execução
 
----
-
-## 4. Amazon EC2, EBS e IPv4 público
-
-Na Tarefa 5, uma instância EC2 será provisionada em sub-rede pública para validar a página web.
-
-Em conta convencional, acompanhar:
-- tempo de execução da EC2;
-- tipo de instância e armazenamento EBS;
-- endereços IPv4 públicos atribuídos ou reservados;
-- tráfego de saída e entre zonas;
-- possíveis recursos que continuam existindo após o encerramento da instância.
-
-Desligar ou encerrar a EC2 não elimina automaticamente todos os recursos de rede da VPC.
-
----
-
-## 5. Registro da execução
-
-| Item | Valor |
+| Item | Registro |
 | --- | --- |
-| Data da execução | A preencher |
-| Região AWS | A preencher |
-| Tipo de ambiente | Educacional; confirmar na execução |
-| Horário de criação do NAT Gateway | A preencher |
-| Horário de exclusão do NAT Gateway | A preencher |
-| Tempo de execução EC2 | A preencher |
-| Evidências de custos e limpeza | A preencher |
-| Cobrança real observada | Não apurada |
+| Laboratório | AWS Lab 267 |
+| Região prevista | Oregon, `us-west-2` |
+| Instância | Web Server 1, t3.micro |
+| AMI selecionada | Amazon Linux 2023 |
+| Verificações EC2 | 3/3 aprovadas |
+| Aplicação HTTP | Carregamento comprovado |
+| Estado final da EC2 | Encerrado |
+| NAT Gateway removido | Não confirmado |
+| Elastic IP liberado | Não confirmado |
+| Custos efetivos | Não apurados |
 
-Não serão publicados IDs de conta, credenciais, tokens ou dados pessoais nas evidências.
+## 5. Atenção ao NAT Gateway
 
----
+O NAT Gateway pode continuar gerando cobranças enquanto provisionado, dependendo das condições da conta.
 
-## 6. Checklist de encerramento
+A documentação da Tarefa 01 confirma seu provisionamento inicial, mas não apresenta comprovação da exclusão posterior.
 
-- [ ] Encerrar a instância EC2 de teste;
-- [ ] Conferir e remover volumes EBS não necessários;
-- [ ] Excluir o NAT Gateway temporário;
-- [ ] Conferir e liberar Elastic IPs não utilizados;
-- [ ] Excluir as sub-redes, tabelas de rotas e Internet Gateway criados especificamente para o laboratório, conforme as regras do ambiente;
-- [ ] Excluir a VPC temporária após a remoção de dependências, quando aplicável;
-- [ ] Verificar recursos restantes na região utilizada;
-- [ ] Revisar Billing/Budgets quando disponível;
-- [ ] Registrar as evidências de limpeza e o resultado real.
+Não se deve declarar custo zero apenas porque a instância EC2 foi encerrada.
 
-Em ambientes educacionais, respeitar também as orientações do laboratório para finalizar a sessão.
-
----
-
-## 7. Referências oficiais
+## 6. Referências
 
 - [Preços da Amazon VPC](https://aws.amazon.com/pt/vpc/pricing/)
-- [Criar uma VPC e recursos associados](https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/create-vpc.html)
+- [Documentação da Amazon VPC](https://docs.aws.amazon.com/vpc/)
 
----
+## 7. Conclusão
 
-## 8. Resultado
+O encerramento da instância EC2 foi comprovado.
 
-**Pendente de execução.** Atualizar esta seção somente após conferir os recursos efetivamente utilizados e a limpeza do ambiente.
+**A auditoria financeira e a verificação dos recursos residuais permanecem pendentes.**
+
+Consulte também a [documentação geral do Lab 02](../README.md).
