@@ -36,10 +36,12 @@ Cada serviço estudado recebe sua própria pasta dentro do repositório.
 
 | Lab | Serviço AWS | Conteúdo principal | Status |
 | --- | --- | --- | --- |
-| 01 | [Amazon EC2](./EC2/) | Provisionamento, monitoramento, acesso HTTP, redimensionamento e encerramento | Concluído |
-| 02 | [Amazon VPC e Servidor Web](./VPC/) | Redes públicas e privadas, roteamento, NAT Gateway, Security Group e EC2 | Em andamento |
+| 01 | [Amazon EC2](./EC2/) | Provisionamento, monitoramento, HTTP e ciclo de vida da EC2 | Concluído |
+| 02 | [Amazon VPC e Servidor Web](./VPC/) | Sub-redes, roteamento, Security Group, EC2 e Apache | Documentação concluída |
 
-O **Lab 02** está em preparação. As evidências serão adicionadas conforme a execução prática.
+O Lab 02 possui cinco tarefas documentadas e 47 capturas revisadas. A aplicação web foi acessada via HTTP e a instância EC2 foi encerrada.
+
+As verificações pendentes de roteamento, distribuição multi-AZ e recursos residuais estão registradas na documentação.
 
 ---
 
@@ -48,15 +50,23 @@ O **Lab 02** está em preparação. As evidências serão adicionadas conforme a
 ```text
 AWS-Lab/
 |-- README.md
-|
-`-- EC2/
+|-- EC2/
+|   |-- README.md
+|   |-- assets/
+|   |-- docs/
+|   |-- evidencias/
+|   `-- scripts/
+`-- VPC/
     |-- README.md
     |-- assets/
-    |   `-- arquitetura-conceitual-ec2.png
     |-- docs/
-    |   `-- controle-de-custos.md
+    |   |-- controle-de-custos.md
+    |   |-- tarefa-01-criacao-vpc.md
+    |   |-- tarefa-02-criacao-sub-redes.md
+    |   |-- tarefa-03-roteamento.md
+    |   |-- tarefa-04-security-group.md
+    |   `-- tarefa-05-servidor-web.md
     |-- evidencias/
-    |   |-- custos/
     |   |-- tarefa-01/
     |   |-- tarefa-02/
     |   |-- tarefa-03/
@@ -64,32 +74,6 @@ AWS-Lab/
     |   `-- tarefa-05/
     `-- scripts/
         `-- user-data.sh
-|
-`-- VPC/
-    |-- README.md
-    |-- assets/
-    |   `-- arquitetura-conceitual-vpc.png
-    |-- docs/
-    |   `-- controle-de-custos.md
-    |-- evidencias/
-    |   |-- tarefa-01/
-    |   |-- tarefa-02/
-    |   |-- tarefa-03/
-    |   |-- tarefa-04/
-    |   `-- tarefa-05/
-    `-- scripts/
-        `-- (user-data.sh: pendente de implementação)
-```
-
-Com a evolução dos estudos, novas áreas poderão ser adicionadas, como:
-
-```text
-AWS-Lab/
-|-- EC2/
-|-- S3/
-|-- IAM/
-|-- Lambda/
-`-- RDS/
 ```
 
 ---
@@ -182,13 +166,15 @@ Entre os principais tópicos estão:
 
 ### Amazon VPC e Servidor Web
 
-O segundo laboratório está em andamento. O escopo inclui VPC `10.0.0.0/16`, quatro sub-redes divididas entre duas Zonas de Disponibilidade, Internet Gateway, NAT Gateway, tabelas de rotas, Security Group HTTP e uma instância EC2 com servidor web.
+O segundo laboratório documenta a criação de uma VPC `10.0.0.0/16`, quatro sub-redes, associações de tabelas de rotas e um Security Group para HTTP.
 
-A arquitetura, as cinco tarefas e o planejamento de custos estão documentados. **Os recursos ainda não foram confirmados como provisionados e as evidências reais serão adicionadas na execução.**
+Uma instância EC2 `t3.micro`, com Amazon Linux 2023 selecionado no lançamento, hospedou a aplicação institucional. O acesso HTTP funcionou após uma tentativa inicial com timeout.
 
-[Acessar documentação do laboratório Amazon VPC](./VPC/)
+A EC2 foi encerrada. A distribuição efetiva entre duas AZs e a limpeza completa dos recursos de rede não foram comprovadas.
 
-[Consultar o controle de custos planejado](./VPC/docs/controle-de-custos.md)
+[Consultar documentação completa do Lab 02](./VPC/)
+
+[Consultar controle de custos e encerramento](./VPC/docs/controle-de-custos.md)
 
 ---
 

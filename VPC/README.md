@@ -1,434 +1,145 @@
-# Laboratório AWS — Amazon VPC e Servidor Web
+# Lab 02 — Amazon VPC e Servidor Web
 
 ![AWS VPC](https://img.shields.io/badge/AWS-Amazon_VPC-FF9900?logo=amazonwebservices&logoColor=white)
 ![Amazon EC2](https://img.shields.io/badge/AWS-Amazon_EC2-FF9900?logo=amazonwebservices&logoColor=white)
-![Status](https://img.shields.io/badge/status-em%20andamento-blue)
+![Status](https://img.shields.io/badge/documentacao-concluida-green)
 
-Laboratório prático dedicado à construção de uma infraestrutura de rede personalizada utilizando **Amazon Virtual Private Cloud (Amazon VPC)** e ao provisionamento de uma instância **Amazon EC2** configurada como servidor web.
+Laboratório prático AWS Lab 267, documentado no portfólio [AWS-Lab](../README.md).
 
-A atividade é executada em um ambiente educacional temporário e documentada como parte do projeto **AWS Lab**, reunindo arquitetura, configurações, evidências, testes e aprendizados obtidos durante a execução.
+**Status:** cinco tarefas documentadas, aplicação HTTP validada visualmente e instância EC2 encerrada. Algumas validações de infraestrutura e limpeza permanecem pendentes.
 
----
+## 1. Objetivo
 
-## 1. Visão geral
+Construir uma Amazon VPC personalizada, configurar sub-redes públicas e privadas, associar tabelas de rotas, criar um Security Group e hospedar uma aplicação web em Amazon EC2.
 
-O **Amazon Virtual Private Cloud (Amazon VPC)** permite criar redes virtuais logicamente isoladas dentro da infraestrutura da AWS.
+## 2. Arquitetura
 
-Neste laboratório, construirei uma VPC com sub-redes públicas e privadas distribuídas entre duas Zonas de Disponibilidade.
+![Arquitetura conceitual](./assets/arquitetura-conceitual-vpc.png)
 
-A arquitetura também utilizará recursos de roteamento e segurança para permitir comunicação entre os componentes da rede e fornecer acesso à Internet quando necessário.
+O diagrama apresenta a arquitetura planejada no roteiro institucional. Não representa uma comprovação integral de disponibilidade multi-AZ.
 
-Ao final da atividade, uma instância Amazon EC2 será provisionada dentro da nova VPC e configurada para executar um servidor web.
+### Configuração de rede
 
-### Arquitetura planejada
+**VPC:** Lab VPC
 
-```mermaid
-flowchart TB
-    INTERNET["Internet"]
-    IGW["Internet Gateway"]
-    VPC["Lab VPC<br/>10.0.0.0/16"]
+**CIDR:** `10.0.0.0/16`
 
-    subgraph AZA["Zona de Disponibilidade A"]
-        PUB1["Public Subnet 1<br/>10.0.0.0/24"]
-        PRIV1["Private Subnet 1<br/>10.0.1.0/24"]
-        NAT["NAT Gateway"]
-    end
+**Região do laboratório:** `us-west-2` (Oregon)
 
-    subgraph AZB["Zona de Disponibilidade B"]
-        PUB2["Public Subnet 2<br/>10.0.2.0/24"]
-        PRIV2["Private Subnet 2<br/>10.0.3.0/24"]
-        SG["Web Security Group<br/>HTTP :80"]
-        EC2["Amazon EC2<br/>Web Server 1"]
-    end
-
-    INTERNET --> IGW
-    IGW --> VPC
-    VPC --> PUB1
-    VPC --> PRIV1
-    VPC --> PUB2
-    VPC --> PRIV2
-
-    PUB1 --> NAT
-    PUB2 --> SG
-    SG --> EC2
-    PRIV1 --> NAT
-    PRIV2 --> NAT
-```
-
-### Diagrama autoral da arquitetura
-
-![Arquitetura conceitual do laboratório Amazon VPC](./assets/arquitetura-conceitual-vpc.png)
-
-O diagrama representa a arquitetura planejada para o laboratório, com VPC, sub-redes públicas e privadas, Internet Gateway, NAT Gateway, tabelas de rotas, Security Group e servidor web Amazon EC2.
-
-### Duração estimada
-
-A duração prevista do laboratório é de aproximadamente **45 minutos**.
-
----
-
-## 2. Objetivos de aprendizagem
-
-Os objetivos deste laboratório são:
-
-- criar uma Amazon VPC;
-- criar sub-redes públicas e privadas;
-- compreender a distribuição de recursos entre Zonas de Disponibilidade;
-- configurar um Internet Gateway;
-- utilizar um NAT Gateway;
-- configurar tabelas de rotas públicas e privadas;
-- associar sub-redes às tabelas de rotas correspondentes;
-- criar um Security Group;
-- permitir acesso HTTP ao servidor web;
-- provisionar uma instância Amazon EC2 dentro da nova VPC;
-- configurar automaticamente um servidor web;
-- validar o acesso à aplicação pela Internet;
-- documentar a arquitetura e as configurações utilizadas.
-
----
-
-## 3. Tecnologias e serviços utilizados
-
-| Tecnologia / Serviço | Utilização |
-| --- | --- |
-| Amazon VPC | Criação da rede virtual |
-| Subnets | Segmentação da rede |
-| Internet Gateway | Comunicação entre a VPC e a Internet |
-| NAT Gateway | Acesso externo para recursos em redes privadas |
-| Route Tables | Controle do roteamento da VPC |
-| Security Groups | Firewall virtual da instância |
-| Amazon EC2 | Hospedagem do servidor web |
-| Amazon Linux 2 | Sistema operacional previsto para a instância |
-| Apache HTTP Server | Servidor web |
-| PHP | Componente utilizado pela aplicação do laboratório |
-| Bash | Automação da configuração inicial |
-| EC2 User Data | Execução automática do provisionamento |
-| AWS Management Console | Criação e gerenciamento dos recursos |
-| PowerShell | Organização e versionamento local do projeto |
-| Git e GitHub | Controle de versão e publicação da documentação |
-
----
-
-## 4. Planejamento de rede
-
-A VPC utilizará o bloco CIDR:
-
-`10.0.0.0/16`
-
-A rede será dividida em quatro sub-redes.
-
-| Sub-rede | CIDR | Tipo | Zona |
-| --- | --- | --- | --- |
-| Public Subnet 1 | `10.0.0.0/24` | Pública | Zona de Disponibilidade A |
-| Private Subnet 1 | `10.0.1.0/24` | Privada | Zona de Disponibilidade A |
-| Public Subnet 2 | `10.0.2.0/24` | Pública | Zona de Disponibilidade B |
-| Private Subnet 2 | `10.0.3.0/24` | Privada | Zona de Disponibilidade B |
-
-### Tabela de rotas pública
-
-A tabela pública deverá possuir uma rota para a Internet.
-
-| Destino | Alvo |
-| --- | --- |
-| `10.0.0.0/16` | local |
-| `0.0.0.0/0` | Internet Gateway |
-
-### Tabela de rotas privada
-
-A tabela privada utilizará o NAT Gateway para acesso externo.
-
-| Destino | Alvo |
-| --- | --- |
-| `10.0.0.0/16` | local |
-| `0.0.0.0/0` | NAT Gateway |
-
----
-
-## 5. Etapas do laboratório
-
-A atividade está organizada em cinco tarefas principais.
-
-### Tarefa 1 — Criar a VPC
-
-Nesta etapa será utilizada a criação de **VPC e muito mais** para provisionar a estrutura inicial.
-
-Configurações previstas:
-
-| Configuração | Valor |
-| --- | --- |
-| Nome da VPC | `Lab VPC` |
-| IPv4 CIDR | `10.0.0.0/16` |
-| IPv6 | Não utilizado |
-| Tenancy | Padrão |
-| Zonas de Disponibilidade | 1 inicialmente |
-| Sub-redes públicas | 1 |
-| Sub-redes privadas | 1 |
-| Public Subnet 1 | `10.0.0.0/24` |
-| Private Subnet 1 | `10.0.1.0/24` |
-| NAT Gateway | 1 AZ |
-| VPC Endpoints | Nenhum |
-| Public Route Table | `Public Route Table` |
-| Private Route Table | `Private Route Table` |
-
-O assistente também criará os componentes necessários para conectar a VPC à Internet.
-
-### Tarefa 2 — Criar sub-redes adicionais
-
-Nesta etapa serão adicionadas duas novas sub-redes para ampliar a arquitetura para uma segunda Zona de Disponibilidade.
-
-| Nome | CIDR | Tipo |
+| Sub-rede | CIDR | Associação confirmada |
 | --- | --- | --- |
-| `Public Subnet 2` | `10.0.2.0/24` | Pública |
-| `Private Subnet 2` | `10.0.3.0/24` | Privada |
+| Public Subnet 1 | `10.0.0.0/24` | Public Route Table |
+| Private Subnet 1 | `10.0.1.0/24` | Private Route Table |
+| Public Subnet 2 | `10.0.2.0/24` | Public Route Table |
+| Private Subnet 2 | `10.0.3.0/24` | Private Route Table |
 
-A distribuição em múltiplas Zonas de Disponibilidade permite compreender conceitos relacionados à disponibilidade e organização de recursos de rede.
+O provisionamento inicial registrou a criação de Internet Gateway e NAT Gateway. As associações das quatro sub-redes foram comprovadas.
 
-### Tarefa 3 — Associar sub-redes e configurar o roteamento
+As entradas efetivas das tabelas de rotas, incluindo os alvos dos gateways, não foram verificadas diretamente nas capturas.
 
-Nesta etapa serão realizadas as associações entre as novas sub-redes e as tabelas de rotas.
+### Limitação de disponibilidade
 
-Planejamento:
+As sub-redes iniciais foram configuradas em `us-west-2a`.
 
-- associar `Public Subnet 2` à `Public Route Table`;
-- associar `Private Subnet 2` à `Private Route Table`;
-- validar as associações existentes;
-- conferir as rotas utilizadas pelas redes públicas;
-- conferir as rotas utilizadas pelas redes privadas.
+A `Public Subnet 2`, utilizada pela instância EC2, também aparece em `us-west-2a`.
 
-Ao final da tarefa, a VPC deverá possuir duas sub-redes públicas e duas privadas organizadas entre duas Zonas de Disponibilidade.
+A AZ da `Private Subnet 2` não foi confirmada.
 
-### Tarefa 4 — Criar o Security Group
+Portanto, a distribuição planejada entre duas Zonas de Disponibilidade não foi integralmente comprovada.
 
-Será criado um Security Group para proteger a instância do servidor web.
+## 3. Documentação por tarefa
 
-| Configuração | Valor |
+| Tarefa | Documento técnico | Evidências | PR |
+| --- | --- | ---: | --- |
+| 01 — Criar VPC | [Tarefa 01](./docs/tarefa-01-criacao-vpc.md) | 13 | [#2](https://github.com/Souzas-Dev/AWS-Lab/pull/2) |
+| 02 — Criar sub-redes | [Tarefa 02](./docs/tarefa-02-criacao-sub-redes.md) | 4 | [#3](https://github.com/Souzas-Dev/AWS-Lab/pull/3) |
+| 03 — Associar rotas | [Tarefa 03](./docs/tarefa-03-roteamento.md) | 9 | [#4](https://github.com/Souzas-Dev/AWS-Lab/pull/4) |
+| 04 — Security Group | [Tarefa 04](./docs/tarefa-04-security-group.md) | 6 | [#5](https://github.com/Souzas-Dev/AWS-Lab/pull/5) |
+| 05 — Servidor Web | [Tarefa 05](./docs/tarefa-05-servidor-web.md) | 15 | [#6](https://github.com/Souzas-Dev/AWS-Lab/pull/6) |
+
+**Total:** 47 capturas de evidências revisadas.
+
+## 4. Servidor Web EC2
+
+| Configuração | Resultado observado |
 | --- | --- |
-| Nome | `Web Security Group` |
-| Descrição | `Enable HTTP access` |
-| VPC | `Lab VPC` |
-| Tipo de entrada | HTTP |
-| Protocolo | TCP |
-| Porta | `80` |
-| Origem | `0.0.0.0/0` |
-| Descrição da regra | `Permit web requests` |
-
-A regra permitirá que clientes externos acessem a aplicação web hospedada na instância EC2.
-
-### Tarefa 5 — Iniciar uma instância de servidor web
-
-Na última tarefa será provisionada uma instância Amazon EC2 dentro da nova VPC.
-
-Configurações previstas:
-
-| Configuração | Valor |
-| --- | --- |
-| Nome | `Web Server 1` |
-| Sistema operacional | Amazon Linux 2 |
-| Tipo de instância | `t3.micro` |
+| Nome | Web Server 1 |
+| AMI selecionada | Amazon Linux 2023 |
+| Tipo | `t3.micro` |
 | Par de chaves | `vockey` |
-| VPC | `Lab VPC` |
-| Sub-rede | Sub-rede pública |
-| IPv4 público automático | Habilitado |
-| Security Group | `Web Security Group` |
-| Servidor web | Apache HTTP Server |
-| Automação | EC2 User Data |
+| VPC | Lab VPC |
+| Sub-rede | Public Subnet 2 |
+| Zona de Disponibilidade | `us-west-2a` |
+| IP público | Atribuído |
+| Security Group | Web Security Group |
+| Porta HTTP | TCP 80 |
+| Origem HTTP | `0.0.0.0/0` |
+| Verificações EC2 | 3/3 aprovadas |
+| Estado final | Encerrado |
 
-Depois do provisionamento, serão verificadas as verificações de status da instância e o endereço DNS público será utilizado para validar a aplicação web.
+O primeiro acesso à aplicação apresentou timeout. Uma tentativa posterior carregou a aplicação institucional via HTTP.
 
----
+O código exato da resposta HTTP e a causa do timeout não foram registrados.
 
-## 6. Automação com EC2 User Data
+## 5. Automação
 
-O laboratório utiliza um script Bash executado durante a inicialização da instância.
+O roteiro institucional original utilizava Amazon Linux 2.
 
-O script será armazenado em:
+Foi preparado um [script User Data](./scripts/user-data.sh) para Amazon Linux 2023 utilizando DNF e systemctl.
 
-`scripts/user-data.sh` (arquivo planejado, ainda não implementado)
+O script contempla:
 
-Sua função será:
+- atualização dos pacotes;
+- instalação de Apache, PHP, wget e unzip;
+- download da aplicação institucional;
+- extração em `/var/www/html`;
+- configuração de permissões;
+- inicialização do Apache.
 
-- instalar o Apache HTTP Server;
-- instalar os componentes adicionais utilizados pela aplicação;
-- baixar os arquivos da aplicação;
-- extrair os arquivos para `/var/www/html/`;
-- habilitar o servidor web durante a inicialização;
-- iniciar o serviço HTTP.
+O trecho visível no Console AWS coincide com a parte correspondente do arquivo local. A execução integral do script não foi conferida diretamente por logs do cloud-init.
 
-O arquivo será criado e validado localmente antes da execução da Tarefa 5.
+## 6. Evidências
 
----
+As imagens revisadas estão disponíveis nos diretórios:
 
-## 7. Evidências
+- [Tarefa 01](./evidencias/tarefa-01/)
+- [Tarefa 02](./evidencias/tarefa-02/)
+- [Tarefa 03](./evidencias/tarefa-03/)
+- [Tarefa 04](./evidencias/tarefa-04/)
+- [Tarefa 05](./evidencias/tarefa-05/)
 
-As evidências serão organizadas de acordo com cada tarefa.
+As capturas publicadas foram revisadas para ocultar identificadores e dados sensíveis desnecessários.
 
-### Evidências da Tarefa 1 — Criar a VPC
+## 7. Custos e segurança
 
-Diretório:
+Recursos como NAT Gateway, IPv4 público, EC2, EBS e transferência de dados podem gerar cobranças em contas AWS convencionais.
 
-`evidencias/tarefa-01/`
+A instância EC2 foi encerrada, mas não há comprovação da exclusão completa dos demais recursos da VPC.
 
-Evidências previstas:
+[Consultar controle de custos e checklist de encerramento](./docs/controle-de-custos.md).
 
-- configuração do CIDR da VPC;
-- configuração das sub-redes iniciais;
-- configuração do NAT Gateway;
-- nomes dos recursos;
-- criação bem-sucedida da `Lab VPC`;
-- visualização final dos recursos criados.
+## 8. Validações pendentes
 
-### Evidências da Tarefa 2 — Criar sub-redes adicionais
+- Destinos e alvos efetivos das rotas públicas e privadas.
+- AZ atribuída à Private Subnet 2.
+- Distribuição real dos recursos entre duas AZs.
+- Execução integral do User Data e logs do cloud-init.
+- Código de status HTTP e diagnóstico do timeout.
+- Regra de saída salva no Security Group.
+- Auditoria de recursos residuais e custos.
 
-Diretório:
+## 9. Aprendizados
 
-`evidencias/tarefa-02/`
+O laboratório permitiu praticar endereçamento CIDR, sub-redes, roteamento, grupos de segurança, EC2, automação com User Data, publicação HTTP e ciclo de vida de instâncias.
 
-Evidências previstas:
+Também demonstrou a importância de distinguir arquitetura planejada, configuração observada e validação efetivamente comprovada.
 
-- criação da `Public Subnet 2`;
-- criação da `Private Subnet 2`;
-- CIDRs configurados;
-- visualização das quatro sub-redes.
+## 10. Conclusão
 
-### Evidências da Tarefa 3 — Associar sub-redes e configurar o roteamento
+As cinco tarefas foram documentadas em Pull Requests separados.
 
-Diretório:
+A aplicação web foi acessada e a instância EC2 foi encerrada.
 
-`evidencias/tarefa-03/`
+**Documentação concluída, com limitações técnicas explicitadas.**
 
-Evidências previstas:
-
-- associação da `Public Subnet 2`;
-- associação da `Private Subnet 2`;
-- tabela de rotas pública;
-- tabela de rotas privada;
-- validação final das associações.
-
-### Evidências da Tarefa 4 — Criar o Security Group
-
-Diretório:
-
-`evidencias/tarefa-04/`
-
-Evidências previstas:
-
-- criação do `Web Security Group`;
-- regra HTTP na porta 80;
-- associação com a `Lab VPC`;
-- resultado final do Security Group.
-
-### Evidências da Tarefa 5 — Iniciar uma instância de servidor web
-
-Diretório:
-
-`evidencias/tarefa-05/`
-
-Evidências previstas:
-
-- configuração da instância;
-- seleção da VPC e sub-rede;
-- associação do Security Group;
-- configuração do User Data;
-- instância em execução;
-- verificações de status;
-- DNS IPv4 público;
-- aplicação web funcionando no navegador.
-
-As capturas destinadas ao repositório serão revisadas antes da publicação para evitar a exposição de informações desnecessárias ou sensíveis.
-
----
-
-## 8. Controle de custos
-
-A arquitetura utiliza recursos que, em uma conta AWS convencional, podem possuir custos associados.
-
-Entre os principais pontos estão:
-
-- execução da instância Amazon EC2;
-- armazenamento associado à instância;
-- endereço IPv4 público;
-- transferência de dados;
-- NAT Gateway;
-- processamento de dados pelo NAT Gateway.
-
-O laboratório é executado em um ambiente educacional temporário, mas os recursos serão analisados também sob a perspectiva de utilização em uma conta AWS própria.
-
-A análise será registrada em:
-
-[`docs/controle-de-custos.md`](./docs/controle-de-custos.md)
-
----
-
-## 9. Estrutura do laboratório
-
-```text
-VPC/
-|-- README.md
-|-- assets/
-|   `-- arquitetura-conceitual-vpc.png
-|-- docs/
-|   `-- controle-de-custos.md
-|-- evidencias/
-|   |-- tarefa-01/
-|   |-- tarefa-02/
-|   |-- tarefa-03/
-|   |-- tarefa-04/
-|   `-- tarefa-05/
-`-- scripts/
-    `-- user-data.sh
-```
-
-A estrutura será preenchida progressivamente durante a execução.
-
----
-
-## 10. Segurança e boas práticas
-
-As práticas adotadas incluem:
-
-- não publicar credenciais AWS;
-- não armazenar Access Keys ou Secret Access Keys;
-- não versionar tokens ou informações de autenticação;
-- revisar identificadores presentes nas capturas;
-- utilizar Security Groups para limitar o tráfego necessário;
-- manter redes públicas e privadas logicamente separadas;
-- documentar alterações de roteamento;
-- evitar alterações fora do escopo do laboratório;
-- remover ou encerrar recursos quando previsto pelo ambiente;
-- registrar problemas e soluções encontrados durante a execução.
-
-O acesso HTTP público é utilizado especificamente para permitir a validação do servidor web solicitada pelo laboratório.
-
----
-
-## 11. Status
-
-**Em andamento.**
-
-A estrutura local do projeto foi criada e o laboratório foi analisado antes da execução dos recursos no Console AWS.
-
-As cinco tarefas práticas ainda serão executadas e documentadas individualmente.
-
----
-
-## 12. Aprendizados
-
-Esta seção será preenchida progressivamente durante a execução.
-
-Os principais tópicos a serem avaliados incluem:
-
-- planejamento de endereçamento CIDR;
-- diferença entre sub-redes públicas e privadas;
-- funcionamento de Internet Gateway;
-- funcionamento de NAT Gateway;
-- tabelas de rotas;
-- distribuição entre Zonas de Disponibilidade;
-- controle de tráfego com Security Groups;
-- integração entre Amazon VPC e Amazon EC2;
-- publicação de aplicações web em infraestrutura AWS.
-
----
-
-## 13. Conclusão
-
-Esta seção será finalizada após a execução das cinco tarefas, validação do servidor web e encerramento do laboratório.
+O encerramento financeiro e a remoção completa da infraestrutura não foram confirmados.
